@@ -24,18 +24,73 @@ static void update_head(game_state_t* state, unsigned int snum);
 /* Task 1 */
 game_state_t* create_default_state() {
   // TODO: Implement this function.
-  return NULL;
+  const char* board1 = "####################";
+  const char* board2 = "#                  #";
+  const char* board3 = "# d>D    *         #";
+  const size_t default_row = 18;
+  const size_t default_col = strlen(board1);
+
+  game_state_t* ret = (game_state_t*)malloc(sizeof(game_state_t));
+
+  ret->num_rows = (unsigned)default_row;
+  ret->num_snakes = 1;
+
+  /*fill board*/
+  ret->board = (char**)malloc(default_row * sizeof(char*));
+  for (int i = 0; i < 18; i++) {
+    ret->board[i] = (char*)malloc((default_col + 1) * sizeof(char));
+    if (ret->board[i] == NULL) {
+      fprintf(stderr, "malloc: ");
+      exit(-1);
+    }
+
+    ret->board[i][default_col] = '\0';
+    if (i == 0 || i == 17) {
+      strcpy(ret->board[i], board1);
+    } else if (i == 2) {
+      strcpy(ret->board[i], board3);
+    } else {
+      strcpy(ret->board[i], board2);
+    }
+  }
+
+  /*set snake*/
+  ret->snakes = (snake_t*)malloc(sizeof(snake_t));
+  ret->snakes->head_col = 4;
+  ret->snakes->head_row = 2;
+  ret->snakes->tail_col = 2;
+  ret->snakes->tail_row = 2;
+  ret->snakes->live = true;
+
+  return ret;
 }
 
 /* Task 2 */
 void free_state(game_state_t* state) {
   // TODO: Implement this function.
+  /*free board*/
+  if (state == NULL) return;
+
+  for (int i = 0; i < state->num_rows; i++) {
+    free(state->board[i]);
+  }
+  free(state->board);
+
+  /*free snake*/
+  free(state->snakes);
+
+  free(state);
+
   return;
 }
 
 /* Task 3 */
 void print_board(game_state_t* state, FILE* fp) {
   // TODO: Implement this function.
+  for (int i = 0; i < state->num_rows; i++) {
+    fputs(state->board[i], fp);
+    fputc('\n', fp);
+  }
   return;
 }
 
@@ -182,6 +237,7 @@ static void update_tail(game_state_t* state, unsigned int snum) {
 /* Task 4.5 */
 void update_state(game_state_t* state, int (*add_food)(game_state_t* state)) {
   // TODO: Implement this function.
+
   return;
 }
 
